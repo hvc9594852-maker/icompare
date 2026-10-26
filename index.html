@@ -976,7 +976,7 @@ function renderSplit(){
     el.querySelector(".rm").onclick=()=>toggle(p.id);
     el.dataset.cat=p.cat;
     const pic=el.querySelector(".pic"),svg=pic.querySelector("svg,img");
-    pic.querySelectorAll("img.photo").forEach(im=>{im.loading="eager";im.fetchPriority="high";if(NOCUT.has(im.dataset.spr?im.dataset.spr.split("#").slice(0,2).join("#"):im.getAttribute("src")))im.classList.add("nokno")});hydrateSpr(pic);
+    pic.querySelectorAll("img.photo").forEach(im=>{im.loading="eager";im.fetchPriority="high";if(NOCUT.has(im.dataset.spr?im.dataset.spr.split("#").slice(0,2).join("#"):(im.getAttribute("src")||"").split("?")[0]))im.classList.add("nokno")});hydrateSpr(pic);
     pic.onpointermove=e=>{const r=pic.getBoundingClientRect();const x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;svg.style.setProperty("--ry",`${x*22}deg`);svg.style.setProperty("--rx",`${-y*12}deg`)};
     pic.onpointerleave=()=>{svg.style.removeProperty("--ry");svg.style.removeProperty("--rx")};
     pic.onclick=()=>{pic.classList.remove("pop");void pic.offsetWidth;pic.classList.add("pop");clearTimeout(pic._t);pic._t=setTimeout(()=>pic.classList.remove("pop"),1600)};
@@ -1091,6 +1091,10 @@ $("#moreBtn").onclick=()=>{shelf.limit+=24;renderGrid()};
 {const cd=$("#credits"),dt=cd.closest("details");const fill=()=>{if(cd.dataset.f)return;cd.dataset.f=1;const cr=P.filter(p=>p.img&&p.credit);$("#credits").innerHTML=cr.map(p=>`<li>${p.name}: ${p.credit.page?`<a href="${p.credit.page}" target="_blank" rel="noopener">${p.credit.artist}</a>`:p.credit.artist} · ${p.credit.lic}</li>`).join("");};if(dt)dt.addEventListener("toggle",fill,{once:true});else fill()}
 $("#src").innerHTML=Object.values(S).map(([t,u])=>`<li><a href="${u}" target="_blank" rel="noopener">${t}</a></li>`).join("");
 setCat(st.cat);
+/* extra photos: anyone can add images to img/extra/ and list them in photos-extra.json ({"ชื่อรุ่นตามเว็บ":"img/extra/ไฟล์.jpg"}) */
+if(!/claude\.ai|claudeusercontent/.test(location.host))fetch("photos-extra.json",{cache:"no-store"}).then(r=>r.ok?r.json():{}).then(m=>{const by={};P.forEach(p=>{by[p.name.toLowerCase()]=p});let n=0;
+  Object.entries(m||{}).forEach(([k,v])=>{const p=by[String(k).toLowerCase().trim()];if(p&&v){p.img=String(v).trim();p.credit={title:p.brand,artist:"© "+p.brand,lic:"ภาพที่ผู้ใช้เพิ่มเอง",page:""};NOCUT.add(p.img);n++}});
+  if(n){Object.keys(SC_CACHE).forEach(k=>delete SC_CACHE[k]);renderAll()}}).catch(()=>{});
 </script>
 
 </html>
