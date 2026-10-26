@@ -224,22 +224,22 @@ body.locked{overflow:hidden}
 .slice .pic img.photo{width:auto;height:auto;max-width:min(100%,300px);max-height:100%;object-fit:contain;border-radius:0;padding:0;background:none;filter:drop-shadow(0 22px 22px rgba(16,17,19,.16))}
 .slice .pic img.photo.nokno{mix-blend-mode:multiply;filter:none}
 .slice .pic{position:relative;cursor:pointer}
-.slice .pic>img.photo,.slice .pic>svg{--rx:0deg;--ry:0deg;--lift:0px;--sc:1;--rz:0deg;transform:translateY(var(--lift)) rotateY(var(--ry)) rotateX(var(--rx)) rotate(var(--rz)) scale(var(--sc))!important;transition:transform .55s cubic-bezier(.34,1.56,.64,1),box-shadow .5s,filter .5s;will-change:transform}
+.slice .pic>img.photo,.slice .pic>svg{will-change:transform;transform-origin:50% 62%;backface-visibility:hidden;transition:filter .5s}
 .slice .pic::after{content:"";position:absolute;left:50%;bottom:4px;width:46%;height:16px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.22),transparent);transition:transform .55s cubic-bezier(.34,1.56,.64,1),opacity .5s;pointer-events:none}
-.slice .pic:hover>*,.slice .pic.pop>*{--lift:-18px;--sc:1.06}
-.slice .pic:hover::after,.slice .pic.pop::after{transform:translateX(-50%) scale(.7);opacity:.6}
-.slice[data-cat=audio] .pic:hover>*,.slice[data-cat=audio] .pic.pop>*{--lift:-34px;--sc:1.08;animation:budfloat 2.2s ease-in-out .55s infinite}
-.slice[data-cat=audio] .pic:hover::after,.slice[data-cat=audio] .pic.pop::after{transform:translateX(-50%) scale(.5);opacity:.4}
+
+.slice .pic.on::after{transform:translateX(-50%) scale(.7);opacity:.6}
+
+.slice[data-cat=audio] .pic.on::after{transform:translateX(-50%) scale(.5);opacity:.4}
 .slice[data-cat=audio] .pic svg .bl,.slice[data-cat=audio] .pic svg .br{transition:transform .6s cubic-bezier(.34,1.56,.64,1)}
-.slice[data-cat=audio] .pic:hover svg .bl,.slice[data-cat=audio] .pic.pop svg .bl{transform:translate(-14px,-26px) rotate(-14deg)}
-.slice[data-cat=audio] .pic:hover svg .br,.slice[data-cat=audio] .pic.pop svg .br{transform:translate(14px,-30px) rotate(12deg)}
-.slice[data-cat=watch] .pic:hover>*,.slice[data-cat=watch] .pic.pop>*{--rz:-10deg;--lift:-14px;--sc:1.1}
-.slice[data-cat=mouse] .pic:hover>*,.slice[data-cat=mouse] .pic.pop>*{animation:glide 1.6s ease-in-out .4s infinite}
-.slice[data-cat=keyboard] .pic:hover>*,.slice[data-cat=keyboard] .pic.pop>*{animation:typey .5s ease-in-out .4s infinite}
+.slice[data-cat=audio] .pic.on svg .bl,.slice[data-cat=audio] .pic.pop svg .bl{transform:translate(-14px,-26px) rotate(-14deg)}
+.slice[data-cat=audio] .pic.on svg .br,.slice[data-cat=audio] .pic.pop svg .br{transform:translate(14px,-30px) rotate(12deg)}
+
+
+
 .slice[data-cat=camera] .pic::before{content:"";position:absolute;inset:0;margin:auto;width:60%;height:60%;border-radius:50%;background:radial-gradient(closest-side,#fff,rgba(255,255,255,0));opacity:0;pointer-events:none;z-index:2}
-.slice[data-cat=camera] .pic:hover::before,.slice[data-cat=camera] .pic.pop::before{animation:flash .9s ease-out .25s}
-.slice[data-cat=phone] .pic:hover>*,.slice[data-cat=tablet] .pic:hover>*,.slice[data-cat=phone] .pic.pop>*,.slice[data-cat=tablet] .pic.pop>*{--ry:-14deg;--rz:-3deg}
-.slice[data-cat=gpu] .pic:hover>*,.slice[data-cat=cpu] .pic:hover>*,.slice[data-cat=chipset] .pic:hover>*,.slice[data-cat=gpu] .pic.pop>*,.slice[data-cat=cpu] .pic.pop>*,.slice[data-cat=chipset] .pic.pop>*{filter:drop-shadow(0 0 22px rgba(35,55,230,.45))}
+.slice[data-cat=camera] .pic.on::before,.slice[data-cat=camera] .pic.pop::before{animation:flash .9s ease-out .25s}
+
+.slice[data-cat=gpu] .pic.on>*,.slice[data-cat=cpu] .pic.on>*,.slice[data-cat=chipset] .pic.on>*,.slice[data-cat=gpu] .pic.pop>*,.slice[data-cat=cpu] .pic.pop>*,.slice[data-cat=chipset] .pic.pop>*{filter:drop-shadow(0 0 22px rgba(35,55,230,.45))}
 @keyframes budfloat{0%,100%{translate:0 0;rotate:0deg}50%{translate:0 -10px;rotate:2deg}}
 @keyframes glide{0%,100%{translate:0 0}50%{translate:14px -4px}}
 @keyframes typey{0%,100%{translate:0 0}50%{translate:0 3px}}
@@ -953,6 +953,25 @@ $("#openDetail").onclick=()=>openSheet(sel());
 $("#openDetail2").onclick=()=>openSheet(sel());
 $("#goShelf").onclick=()=>document.querySelector(".shelf").scrollIntoView({behavior:"smooth",block:"start"});
 
+const POPCFG={_:{y:-18,s:1.06},audio:{y:-34,s:1.08,fy:10,fr:2,per:2.2},watch:{y:-14,s:1.1,rz:-10},mouse:{y:-12,s:1.05,fx:14,fy:4,per:1.6},keyboard:{y:-12,s:1.05,fy:3,per:.5},phone:{y:-18,s:1.06,ry:-14,rz:-3},tablet:{y:-18,s:1.06,ry:-14,rz:-3}};
+const RM=matchMedia("(prefers-reduced-motion: reduce)");
+function popFx(pic,cat){
+  const C=POPCFG[cat]||POPCFG._,K=["y","s","rx","ry","rz","amp"],v={y:0,s:1,rx:0,ry:0,rz:0,amp:0},vel={y:0,s:0,rx:0,ry:0,rz:0,amp:0};
+  let hov=false,pop=false,px=0,py=0,raf=0,last=0,t0=0,popT=0;
+  const tgt=()=>{const on=hov||pop;return{y:on?C.y:0,s:on?C.s:1,rx:hov?-py*12:0,ry:(hov?px*22:0)+(on&&C.ry||0),rz:on&&C.rz||0,amp:on&&C.per?1:0}};
+  const tick=now=>{const el=pic.firstElementChild;if(!el||!pic.isConnected){raf=0;return}
+    const dt=Math.min(.034,(now-(last||now))/1000)||.016;last=now;if(!t0)t0=now;
+    const T=tgt();let busy=hov||pop;
+    for(const k of K){const kk=k==="s"?260:k==="amp"?60:180,c=k==="amp"?14:17;const a=kk*(T[k]-v[k])-c*vel[k];vel[k]+=a*dt;v[k]+=vel[k]*dt;if(Math.abs(T[k]-v[k])>.002||Math.abs(vel[k])>.002)busy=true}
+    let ox=0,oy=0,orr=0;if(C.per&&v.amp>.001){const ph=Math.sin((now-t0)/1000/C.per*2*Math.PI);ox=(C.fx||0)*ph*v.amp;oy=-(C.fy||0)*Math.abs(ph)*v.amp;orr=(C.fr||0)*ph*v.amp}
+    el.style.transform=`translate3d(${ox.toFixed(2)}px,${(v.y+oy).toFixed(2)}px,0) rotateY(${v.ry.toFixed(2)}deg) rotateX(${v.rx.toFixed(2)}deg) rotate(${(v.rz+orr).toFixed(2)}deg) scale(${v.s.toFixed(4)})`;
+    if(busy)raf=requestAnimationFrame(tick);else{raf=0;last=0;el.style.transform=""}};
+  const go=()=>{if(RM.matches)return;if(!raf){last=0;raf=requestAnimationFrame(tick)}};
+  pic.onpointerenter=e=>{if(e.pointerType==="mouse"){hov=true;pic.classList.add("on");go()}};
+  pic.onpointermove=e=>{if(e.pointerType!=="mouse")return;const r=pic.getBoundingClientRect();px=(e.clientX-r.left)/r.width-.5;py=(e.clientY-r.top)/r.height-.5;hov=true;go()};
+  pic.onpointerleave=()=>{hov=false;px=py=0;if(!pop)pic.classList.remove("on");go()};
+  pic.onclick=()=>{pop=true;pic.classList.add("on","pop");clearTimeout(popT);popT=setTimeout(()=>{pop=false;pic.classList.remove("pop");if(!hov)pic.classList.remove("on");go()},1600);go()};
+}
 function renderSplit(){
   const items=sel(),sc=scores(st.cat),box=$("#split");
   const priced=items.length>0&&items.every(p=>sc[p.id].value!=null);
@@ -983,9 +1002,7 @@ function renderSplit(){
     el.dataset.cat=p.cat;
     const pic=el.querySelector(".pic"),svg=pic.querySelector("svg,img");
     pic.querySelectorAll("img.photo").forEach(im=>{im.loading="eager";im.fetchPriority="high";if(NOCUT.has(im.dataset.spr?im.dataset.spr.split("#").slice(0,2).join("#"):(im.getAttribute("src")||"").split("?")[0]))im.classList.add("nokno")});hydrateSpr(pic);
-    pic.onpointermove=e=>{const r=pic.getBoundingClientRect();const x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;svg.style.setProperty("--ry",`${x*22}deg`);svg.style.setProperty("--rx",`${-y*12}deg`)};
-    pic.onpointerleave=()=>{svg.style.removeProperty("--ry");svg.style.removeProperty("--rx")};
-    pic.onclick=()=>{pic.classList.remove("pop");void pic.offsetWidth;pic.classList.add("pop");clearTimeout(pic._t);pic._t=setTimeout(()=>pic.classList.remove("pop"),1600)};
+    popFx(pic,p.cat);
     box.appendChild(el);
     const g=items.length>1?Math.max(vals[i]/tot*10,2.6):1;
     requestAnimationFrame(()=>el.style.flexGrow=g);
