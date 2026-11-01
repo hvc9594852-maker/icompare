@@ -7,6 +7,7 @@
 <style>html,body{margin:0;padding:0}</style>
 <title>iCompare – เปรียบเทียบสเปกมือถือ โน้ตบุ๊ก ทีวี หูฟัง กล้อง การ์ดจอ ราคาไทย</title>
 <link rel="canonical" href="https://icompare.work/">
+<script src="/b.js" defer></script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="website"><meta property="og:site_name" content="iCompare"><meta property="og:title" content="iCompare – เปรียบเทียบสเปกและความคุ้มค่าสินค้าไอที"><meta property="og:description" content="เทียบสเปก ราคา และความคุ้มค่า มือถือ แท็บเล็ต แล็ปท็อป ทีวี หูฟัง กล้อง และอีกกว่า 3,200 รุ่น"><meta property="og:url" content="https://icompare.work/"><meta property="og:image" content="https://icompare.work/og.png"><meta property="og:locale" content="th_TH"><meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "iCompare", "url": "https://icompare.work/", "inLanguage": "th", "description": "เว็บเปรียบเทียบสเปกและความคุ้มค่า มือถือ แท็บเล็ต แล็ปท็อป ทีวี หูฟัง กล้อง คีย์บอร์ด เมาส์ สมาร์ตวอทช์ การ์ดจอ ซีพียู และชิปมือถือ"}</script>
@@ -350,6 +351,7 @@ footer a{color:var(--ink-2);text-decoration:none;border-bottom:1px solid var(--l
 </div></section>
 
 <footer class="band"><div class="in">
+  <p style="margin:0 0 14px"><a href="#" data-icb-report hidden style="color:var(--brand)">แจ้งข้อมูลผิด / ขอเพิ่มรุ่น</a></p>
   <nav class="catlinks" aria-label="หมวดสินค้าทั้งหมด"><b>ดูสเปกตามหมวด</b><a href="/c/phone/">มือถือ</a><a href="/c/tablet/">แท็บเล็ต</a><a href="/c/mac/">แล็ปท็อป</a><a href="/c/tv/">ทีวี</a><a href="/c/audio/">หูฟัง</a><a href="/c/camera/">กล้อง</a><a href="/c/keyboard/">คีย์บอร์ด</a><a href="/c/mouse/">เมาส์</a><a href="/c/watch/">สมาร์ตวอทช์</a><a href="/c/gpu/">การ์ดจอ</a><a href="/c/cpu/">ซีพียู</a><a href="/c/chipset/">ชิปมือถือ</a></nav>
   <p>คะแนน iCompare คำนวณจากสเปกที่ผู้ผลิตเปิดเผยจริง ปรับเป็น 40–100 ภายในหมวด กลุ่มที่เลือก “เน้น” มีน้ำหนัก 3 เท่า ความคุ้ม = คะแนนต่อราคา 10,000 บาท ราคาเป็นราคาเปิดตัวหรือราคาตั้งในไทย อาจต่างจากหน้าร้านและโปรโมชัน ราคาที่มาจากสหรัฐฯ แปลงเป็นบาทที่ประมาณ 33 บาท/ดอลลาร์ เพราะยังไม่พบราคาไทยที่ยืนยันได้ หมวดมือถือมีมากกว่า 500 รุ่น รุ่นที่เลิกขายหรือยังไม่มีราคาไทยที่ยืนยันได้จะไม่ถูกคิดความคุ้ม สเปกรุ่นที่ออกระหว่าง ก.ค.–ต.ค. 2569 และราคาไทยตรวจจากแหล่งที่ลิงก์ไว้ ส่วนสเปกรุ่นก่อนหน้ารวบรวมจากตัวเลขที่ผู้ผลิตประกาศตอนเปิดตัว (บางรุ่นต่างกันตามภูมิภาค เช่น ชิป Exynos / Snapdragon) ตรวจซ้ำรายรุ่นได้ที่ GSMArena ภาพสินค้าเป็นภาพทางการจากเว็บไซต์ผู้ผลิต (ลิขสิทธิ์ของเจ้าของแบรนด์) รุ่นที่ยังไม่มีภาพทางการแสดงเป็นภาพวาด</p>
   <ul id="src"></ul>
@@ -710,7 +712,7 @@ Object.assign(S,{
 const DSRC={phone:["apstore","droidS26","ofm","gsma"],tablet:["ipadpro","dh","pa","ipadair","tr2","tab","sam"],mac:["trmac","eng","cult","tn"],tv:["tvcmp","sp2","aa"],audio:["app3","istudio","sony","jib","mr","shop","sg","whf"]};
 
 let sheetItems=[],lastFocus=null;
-function openSheet(items){if(items.length<2){const sh=document.querySelector(".shelf");if(sh)sh.scrollIntoView({behavior:"smooth",block:"start"});return}
+function openSheet(items){try{if(window.iCB&&items.length>=2)iCB.track("sheet",{cat:st.cat,items:items.map(p=>p.id)})}catch(e){}if(items.length<2){const sh=document.querySelector(".shelf");if(sh)sh.scrollIntoView({behavior:"smooth",block:"start"});return}
   sheetItems=items.length?items:P.filter(p=>p.cat===st.cat).slice(0,2);
   lastFocus=document.activeElement;
   $("#sheetTitle").textContent=sheetItems.length===1?`รายละเอียด ${sheetItems[0].name}`:`เทียบสเปกละเอียด · ${CATS.find(c=>c.id===st.cat).th}`;
@@ -1122,7 +1124,7 @@ function renderGrid(){
   const cnt=$("#resultCount");if(cnt)cnt.textContent=phone?`พบ ${list.length} รุ่น`:"";
 }
 function toggle(id,fromShelf){const s=st.sel[st.cat],i=s.indexOf(id);if(i>-1)s.splice(i,1);else{if(s.length>=3)s.shift();s.push(id)}renderAll();if(fromShelf&&i<0)window.scrollTo({top:0,behavior:"smooth"})}
-function renderAll(){renderNav();renderHead();renderSplit();renderLadder();renderVerdict();renderShelf()}
+function renderAll(){renderNav();renderHead();renderSplit();renderLadder();renderVerdict();renderShelf();try{const it=st.sel[st.cat];if(window.iCB)iCB.track(it.length>=2?"compare":"cat",{cat:st.cat,items:it.length>=2?it:null})}catch(e){}}
 function setCat(c){st.cat=c;warmCat(c);try{localStorage.setItem("icmp-cat",c)}catch(e){}$("#split").innerHTML="";renderAll()}
 $("#budget").addEventListener("input",e=>{st.budget=+e.target.value;$("#bo").textContent=st.budget>=130000?"ไม่จำกัด":fmt(st.budget,"THB");renderGrid()});
 $("#moreBtn").onclick=()=>{shelf.limit+=24;renderGrid()};

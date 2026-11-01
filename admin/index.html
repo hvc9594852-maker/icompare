@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>หลังบ้าน iCompare</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Noto+Sans+Thai:wght@400;500;600&display=swap">
+<style>
+:root{--ink:#101113;--ink2:#4e5157;--ink3:#8b8e94;--line:rgba(16,17,19,.09);--mist:#f3f3f1;--brand:#2337e6;--ok:#1f9d55;--warn:#d97706;--bad:#d64545}
+*{box-sizing:border-box}body{margin:0;background:var(--mist);color:var(--ink);font-family:"Noto Sans Thai","Geist",system-ui,sans-serif;line-height:1.55}
+.in{max-width:1120px;margin:0 auto;padding:0 16px}
+header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+header .in{display:flex;align-items:center;gap:14px;height:60px}
+.logo{font-family:Geist,sans-serif;font-weight:600;font-size:20px;letter-spacing:-.04em}.logo b{color:var(--brand);font-weight:600}.logo small{font-family:"Noto Sans Thai";font-weight:400;color:var(--ink3);font-size:13px;margin-left:8px;letter-spacing:0}
+nav.tabs{display:flex;gap:4px;margin-left:auto}nav.tabs button{font:inherit;border:0;background:none;padding:8px 14px;border-radius:999px;color:var(--ink2);cursor:pointer;position:relative}
+nav.tabs button[aria-selected=true]{background:var(--brand);color:#fff}
+.badge{display:inline-block;min-width:18px;padding:0 6px;border-radius:999px;background:var(--bad);color:#fff;font-size:11px;line-height:18px;margin-left:6px;text-align:center}
+button.ghost{font:inherit;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;cursor:pointer;color:var(--ink2)}
+main{padding:22px 0 60px}
+.card{background:#fff;border-radius:20px;padding:18px 20px;margin-bottom:14px}
+.card h2{font-size:16px;margin:0 0 12px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+.kpi{background:#fff;border-radius:20px;padding:16px 18px}.kpi b{display:block;font-family:Geist,sans-serif;font-size:32px;font-weight:600;letter-spacing:-.03em;font-variant-numeric:tabular-nums}.kpi span{color:var(--ink2);font-size:14px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+table{width:100%;border-collapse:collapse;font-size:14px}td,th{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--ink3);font-weight:400}td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.bar{height:6px;border-radius:99px;background:#e9ebfd;margin-top:4px}.bar i{display:block;height:100%;border-radius:99px;background:var(--brand)}
+.chart{display:flex;align-items:flex-end;gap:3px;height:160px;padding-top:10px}
+.chart .c{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;min-width:0;height:100%}
+.chart .c i{display:block;width:100%;background:var(--brand);border-radius:6px 6px 2px 2px;min-height:2px}
+.chart .c small{font-size:10px;color:var(--ink3);margin-top:4px;white-space:nowrap}
+.legend{color:var(--ink3);font-size:13px}
+.item{background:#fff;border-radius:18px;padding:14px 16px;margin-bottom:10px;display:grid;gap:6px}
+.item .top{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.item .meta{color:var(--ink3);font-size:13px}
+.pill{font-size:12px;padding:2px 10px;border-radius:999px;background:var(--mist);color:var(--ink2)}
+.pill.new,.pill.pending{background:#fff4e5;color:var(--warn)}.pill.done,.pill.approved{background:#e7f6ee;color:var(--ok)}.pill.ignored,.pill.rejected{background:#fdecec;color:var(--bad)}
+.item p{margin:0;white-space:pre-wrap}.acts{display:flex;gap:8px;flex-wrap:wrap}
+.acts button{font:inherit;font-size:13px;border:0;border-radius:999px;padding:6px 14px;cursor:pointer}
+.b-ok{background:var(--ok);color:#fff}.b-bad{background:#fdecec;color:var(--bad)}.b-n{background:var(--mist);color:var(--ink2)}
+.filters{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}.filters button{font:inherit;font-size:13px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 12px;cursor:pointer}.filters button[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.st{color:#f5a623;letter-spacing:1px}
+.login{max-width:380px;margin:12vh auto;background:#fff;border-radius:24px;padding:28px}
+.login h1{font-size:22px;margin:0 0 4px}.login p{color:var(--ink2);margin:0 0 18px;font-size:14px}
+.login input{font:inherit;width:100%;padding:11px 14px;border:1px solid rgba(16,17,19,.15);border-radius:12px;margin-bottom:10px}
+.login button{font:inherit;width:100%;padding:12px;border:0;border-radius:999px;background:var(--brand);color:#fff;font-weight:500;cursor:pointer}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin-top:8px}
+.empty{color:var(--ink3);text-align:center;padding:30px}
+select.days{font:inherit;border:1px solid var(--line);border-radius:999px;padding:6px 10px;background:#fff}
+@media (max-width:800px){.kpis{grid-template-columns:1fr 1fr}.cols{grid-template-columns:1fr}nav.tabs button{padding:8px 10px}.logo small{display:none}}
+</style></head><body>
+<div id="app"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+const SB_URL="__SB_URL__",SB_KEY="__SB_KEY__";
+const sb=supabase.createClient(SB_URL,SB_KEY);
+const $=s=>document.querySelector(s),app=$("#app");
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt=n=>Number(n||0).toLocaleString("th-TH");
+const when=t=>new Date(t).toLocaleString("th-TH",{dateStyle:"medium",timeStyle:"short"});
+let NAMES={};fetch("/admin/names.json").then(r=>r.json()).then(j=>NAMES=j).catch(()=>{});
+const nm=id=>NAMES[id]?NAMES[id][0]:id;
+const KIND={price:"ราคาไม่ถูกต้อง",spec:"สเปกไม่ถูกต้อง",photo:"รูปภาพ",missing:"ขอเพิ่มรุ่น",other:"อื่นๆ"};
+const ST={new:"ใหม่",done:"แก้แล้ว",ignored:"ไม่ดำเนินการ",pending:"รออนุมัติ",approved:"อนุมัติแล้ว",rejected:"ไม่อนุมัติ"};
+let tab="stats",days=30,rpFilter="new",rvFilter="pending";
+
+function loginView(msg){
+  app.innerHTML=`<form class="login" id="lf"><div class="logo">i<b>Compare</b></div><h1 style="margin-top:14px">เข้าสู่ระบบหลังบ้าน</h1><p>สำหรับผู้ดูแลเว็บเท่านั้น</p>
+  <input type="email" id="em" placeholder="อีเมล" autocomplete="username" required><input type="password" id="pw" placeholder="รหัสผ่าน" autocomplete="current-password" required>
+  <button>เข้าสู่ระบบ</button><div class="err">${esc(msg||"")}</div></form>`;
+  $("#lf").onsubmit=async e=>{e.preventDefault();$(".err").textContent="กำลังเข้าสู่ระบบ…";
+    const {error}=await sb.auth.signInWithPassword({email:$("#em").value.trim(),password:$("#pw").value});
+    if(error){$(".err").textContent="อีเมลหรือรหัสผ่านไม่ถูกต้อง";return}boot()};
+}
+async function counts(){
+  const [a,b]=await Promise.all([sb.from("reports").select("id",{count:"exact",head:true}).eq("status","new"),sb.from("reviews").select("id",{count:"exact",head:true}).eq("status","pending")]);
+  return {rp:a.count||0,rv:b.count||0};
+}
+async function shell(){
+  const c=await counts();
+  app.innerHTML=`<header><div class="in"><a class="logo" href="/" target="_blank">i<b>Compare</b><small>หลังบ้าน</small></a>
+  <nav class="tabs" role="tablist"><button role="tab" data-t="stats">สถิติ</button><button role="tab" data-t="reports">แจ้งปัญหา${c.rp?`<span class="badge">${c.rp}</span>`:""}</button><button role="tab" data-t="reviews">รีวิว${c.rv?`<span class="badge">${c.rv}</span>`:""}</button></nav>
+  <button class="ghost" id="out">ออกจากระบบ</button></div></header><main class="in" id="main"></main>`;
+  document.querySelectorAll("nav.tabs button").forEach(b=>{b.setAttribute("aria-selected",b.dataset.t===tab);b.onclick=()=>{tab=b.dataset.t;shell()}});
+  $("#out").onclick=async()=>{await sb.auth.signOut();loginView()};
+  ({stats,reports,reviews})[tab]();
+}
+function list(rows,label,val,fmtLabel){
+  if(!rows||!rows.length)return `<div class="empty">ยังไม่มีข้อมูล</div>`;
+  const mx=Math.max(...rows.map(r=>r[val]));
+  return `<table>${rows.map(r=>`<tr><td>${fmtLabel?fmtLabel(r[label]):esc(r[label])}<div class="bar"><i style="width:${(r[val]/mx*100).toFixed(1)}%"></i></div></td><td class="n">${fmt(r[val])}</td></tr>`).join("")}</table>`;
+}
+async function stats(){
+  const M=$("#main");M.innerHTML=`<div class="empty">กำลังโหลดสถิติ…</div>`;
+  const {data,error}=await sb.rpc("admin_stats",{days});
+  if(error){M.innerHTML=`<div class="card">โหลดสถิติไม่ได้: ${esc(error.message)}</div>`;return}
+  const t=data.totals,dl=data.daily||[];
+  const filled=[];const d0=new Date();d0.setHours(0,0,0,0);
+  for(let i=Math.min(days,60)-1;i>=0;i--){const d=new Date(d0);d.setDate(d.getDate()-i);const k=d.toLocaleDateString("sv-SE",{timeZone:"Asia/Bangkok"});const r=dl.find(x=>x.day===k)||{visitors:0,views:0,compares:0};filled.push({k,...r})}
+  const mx=Math.max(1,...filled.map(r=>r.visitors));
+  const CATN={phone:"มือถือ",tablet:"แท็บเล็ต",mac:"แล็ปท็อป",tv:"ทีวี",audio:"หูฟัง",camera:"กล้อง",keyboard:"คีย์บอร์ด",mouse:"เมาส์",watch:"สมาร์ตวอทช์",gpu:"การ์ดจอ",cpu:"ซีพียู",chipset:"ชิปมือถือ"};
+  const DEV={mobile:"มือถือ",desktop:"คอมพิวเตอร์",tablet:"แท็บเล็ต"};
+  M.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><b>ภาพรวม</b><select class="days" id="days">${[7,30,90,365].map(d=>`<option value="${d}" ${d===days?"selected":""}>${d} วันล่าสุด</option>`).join("")}</select></div>
+  <div class="kpis"><div class="kpi"><b>${fmt(t.today_visitors)}</b><span>คนเข้าเว็บวันนี้</span></div><div class="kpi"><b>${fmt(t.visitors)}</b><span>คนเข้าเว็บ (${days} วัน)</span></div><div class="kpi"><b>${fmt(t.views)}</b><span>จำนวนหน้าที่เปิด</span></div><div class="kpi"><b>${fmt(t.compares)}</b><span>ครั้งที่กดเปรียบเทียบ</span></div></div>
+  <div class="card"><h2>คนเข้าเว็บรายวัน</h2><div class="chart">${filled.map(r=>`<div class="c" title="${r.k}: ${r.visitors} คน · ${r.views} หน้า"><i style="height:${(r.visitors/mx*100).toFixed(1)}%"></i><small>${filled.length<=31||r.k.endsWith("01")?r.k.slice(8):""}</small></div>`).join("")}</div><div class="legend">นับเป็นจำนวนคน (1 คนต่อ 1 แท็บเบราว์เซอร์) ไม่ใช้คุกกี้</div></div>
+  <div class="cols"><div class="card"><h2>รุ่นที่ถูกดู/เทียบมากที่สุด</h2>${list(data.products,"id","n",id=>esc(nm(id)))}</div>
+  <div class="card"><h2>คู่ที่ถูกเทียบบ่อยที่สุด</h2>${list(data.pairs,"pair","n",p=>p.split(" | ").map(x=>esc(nm(x))).join(" <span style='color:var(--ink3)'>vs</span> "))}</div>
+  <div class="card"><h2>หน้าที่ถูกเปิดมากที่สุด</h2>${list(data.pages,"path","n",p=>{const m=p.match(/^\/p\/([^/]+)/);return esc(m?nm(m[1]):p==="/"?"หน้าแรก (เปรียบเทียบ)":p)})}</div>
+  <div class="card"><h2>คนมาจากไหน</h2>${list(data.refs,"src","n")}</div>
+  <div class="card"><h2>หมวดยอดนิยม</h2>${list(data.cats,"cat","n",c=>esc(CATN[c]||c))}</div>
+  <div class="card"><h2>อุปกรณ์</h2>${list(data.devices,"device","n",d=>esc(DEV[d]||d))}</div></div>`;
+  $("#days").onchange=e=>{days=+e.target.value;stats()};
+}
+function filters(cur,opts,cb){return `<div class="filters">${opts.map(o=>`<button data-v="${o}" aria-pressed="${o===cur}">${o==="all"?"ทั้งหมด":ST[o]}</button>`).join("")}</div>`}
+async function reports(){
+  const M=$("#main");let q=sb.from("reports").select("*").order("ts",{ascending:false}).limit(200);if(rpFilter!=="all")q=q.eq("status",rpFilter);
+  const {data,error}=await q;if(error){M.innerHTML=`<div class="card">${esc(error.message)}</div>`;return}
+  M.innerHTML=filters(rpFilter,["new","done","ignored","all"])+(data.length?data.map(r=>`<div class="item"><div class="top"><span class="pill ${r.status}">${ST[r.status]}</span><b>${esc(KIND[r.kind]||r.kind)}</b>${r.product_name?`<span>· ${esc(r.product_name)}</span>`:""}</div>
+   <p>${esc(r.message)}</p><div class="meta">${when(r.ts)}${r.contact?` · ติดต่อกลับ: ${esc(r.contact)}`:""}${r.page?` · <a href="${esc(r.page)}" target="_blank" rel="noopener">หน้าที่แจ้ง</a>`:""}</div>
+   <div class="acts">${r.status!=="done"?`<button class="b-ok" data-id="${r.id}" data-s="done">แก้แล้ว</button>`:""}${r.status!=="ignored"?`<button class="b-bad" data-id="${r.id}" data-s="ignored">ไม่ดำเนินการ</button>`:""}${r.status!=="new"?`<button class="b-n" data-id="${r.id}" data-s="new">กลับเป็นใหม่</button>`:""}</div></div>`).join(""):`<div class="empty">ไม่มีรายการ</div>`);
+  M.querySelectorAll(".filters button").forEach(b=>b.onclick=()=>{rpFilter=b.dataset.v;reports()});
+  M.querySelectorAll(".acts button").forEach(b=>b.onclick=async()=>{b.disabled=true;await sb.from("reports").update({status:b.dataset.s}).eq("id",b.dataset.id);shell()});
+}
+async function reviews(){
+  const M=$("#main");let q=sb.from("reviews").select("*").order("ts",{ascending:false}).limit(200);if(rvFilter!=="all")q=q.eq("status",rvFilter);
+  const {data,error}=await q;if(error){M.innerHTML=`<div class="card">${esc(error.message)}</div>`;return}
+  M.innerHTML=filters(rvFilter,["pending","approved","rejected","all"])+(data.length?data.map(r=>`<div class="item"><div class="top"><span class="pill ${r.status}">${ST[r.status]}</span><span class="st">${"★".repeat(r.rating)}${"☆".repeat(5-r.rating)}</span><b>${esc(r.name)}</b><span>· <a href="/p/${encodeURIComponent(r.product_id)}/" target="_blank">${esc(r.product_name||nm(r.product_id))}</a></span></div>
+   <p>${esc(r.body)}</p><div class="meta">${when(r.ts)}</div>
+   <div class="acts">${r.status!=="approved"?`<button class="b-ok" data-id="${r.id}" data-s="approved">อนุมัติ (ขึ้นเว็บ)</button>`:""}${r.status!=="rejected"?`<button class="b-bad" data-id="${r.id}" data-s="rejected">ไม่อนุมัติ</button>`:""}<button class="b-n" data-id="${r.id}" data-del="1">ลบ</button></div></div>`).join(""):`<div class="empty">ไม่มีรายการ</div>`);
+  M.querySelectorAll(".filters button").forEach(b=>b.onclick=()=>{rvFilter=b.dataset.v;reviews()});
+  M.querySelectorAll(".acts button").forEach(b=>b.onclick=async()=>{
+    if(b.dataset.del){if(!b.dataset.c){b.dataset.c=1;b.textContent="ยืนยันลบ?";return}await sb.from("reviews").delete().eq("id",b.dataset.id)}
+    else await sb.from("reviews").update({status:b.dataset.s}).eq("id",b.dataset.id);
+    shell()});
+}
+async function boot(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session)return loginView();
+  const t=await sb.rpc("admin_stats",{days:1});
+  if(t.error&&/not allowed/.test(t.error.message)){await sb.auth.signOut();return loginView("บัญชีนี้ไม่มีสิทธิ์เข้าหลังบ้าน")}
+  shell();
+}
+boot();
+</script></body></html>
