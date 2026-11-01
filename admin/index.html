@@ -10,7 +10,7 @@
 .in{max-width:1120px;margin:0 auto;padding:0 16px}
 header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
 header .in{display:flex;align-items:center;gap:14px;height:60px}
-.logo{font-family:Geist,sans-serif;font-weight:600;font-size:20px;letter-spacing:-.04em}.logo b{color:var(--brand);font-weight:600}.logo small{font-family:"Noto Sans Thai";font-weight:400;color:var(--ink3);font-size:13px;margin-left:8px;letter-spacing:0}
+.logo{font-family:Geist,sans-serif;font-weight:600;font-size:20px;letter-spacing:-.04em;color:var(--ink);text-decoration:none}.logo b{color:var(--brand);font-weight:600}.logo small{font-family:"Noto Sans Thai";font-weight:400;color:var(--ink3);font-size:13px;margin-left:8px;letter-spacing:0}
 nav.tabs{display:flex;gap:4px;margin-left:auto}nav.tabs button{font:inherit;border:0;background:none;padding:8px 14px;border-radius:999px;color:var(--ink2);cursor:pointer;position:relative}
 nav.tabs button[aria-selected=true]{background:var(--brand);color:#fff}
 .badge{display:inline-block;min-width:18px;padding:0 6px;border-radius:999px;background:var(--bad);color:#fff;font-size:11px;line-height:18px;margin-left:6px;text-align:center}
@@ -47,10 +47,11 @@ select.days{font:inherit;border:1px solid var(--line);border-radius:999px;paddin
 @media (max-width:800px){.kpis{grid-template-columns:1fr 1fr}.cols{grid-template-columns:1fr}nav.tabs button{padding:8px 10px}.logo small{display:none}}
 </style></head><body>
 <div id="app"></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
-const SB_URL="__SB_URL__",SB_KEY="__SB_KEY__";
-const sb=supabase.createClient(SB_URL,SB_KEY);
+const API="__API__";
+let TOKEN=null;try{TOKEN=localStorage.getItem("icb-admin")}catch(e){}
+async function api(path,body){const r=await fetch(API+path,{method:body?"POST":"GET",headers:{...(body?{"Content-Type":"application/json"}:{}),...(TOKEN?{Authorization:"Bearer "+TOKEN}:{})},body:body?JSON.stringify(body):undefined});
+  const j=await r.json().catch(()=>({}));if(r.status===401&&path!=="/admin/login"){TOKEN=null;try{localStorage.removeItem("icb-admin")}catch(e){}loginView("หมดเวลาเข้าสู่ระบบ กรุณาเข้าใหม่");throw new Error("auth")}if(!r.ok)throw new Error(j.error||r.status);return j}
 const $=s=>document.querySelector(s),app=$("#app");
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>Number(n||0).toLocaleString("th-TH");
@@ -63,15 +64,14 @@ let tab="stats",days=30,rpFilter="new",rvFilter="pending";
 
 function loginView(msg){
   app.innerHTML=`<form class="login" id="lf"><div class="logo">i<b>Compare</b></div><h1 style="margin-top:14px">เข้าสู่ระบบหลังบ้าน</h1><p>สำหรับผู้ดูแลเว็บเท่านั้น</p>
-  <input type="email" id="em" placeholder="อีเมล" autocomplete="username" required><input type="password" id="pw" placeholder="รหัสผ่าน" autocomplete="current-password" required>
+  <input type="text" id="em" value="admin" autocomplete="username" hidden><input type="password" id="pw" placeholder="รหัสผ่านแอดมิน" autocomplete="current-password" required autofocus>
   <button>เข้าสู่ระบบ</button><div class="err">${esc(msg||"")}</div></form>`;
   $("#lf").onsubmit=async e=>{e.preventDefault();$(".err").textContent="กำลังเข้าสู่ระบบ…";
-    const {error}=await sb.auth.signInWithPassword({email:$("#em").value.trim(),password:$("#pw").value});
-    if(error){$(".err").textContent="อีเมลหรือรหัสผ่านไม่ถูกต้อง";return}boot()};
+    try{const j=await api("/admin/login",{password:$("#pw").value});TOKEN=j.token;try{localStorage.setItem("icb-admin",TOKEN)}catch(e){}shell()}
+    catch(e){$(".err").textContent=/rate/.test(e.message)?"ลองหลายครั้งเกินไป รอ 1 ชั่วโมง":"รหัสผ่านไม่ถูกต้อง"}};
 }
 async function counts(){
-  const [a,b]=await Promise.all([sb.from("reports").select("id",{count:"exact",head:true}).eq("status","new"),sb.from("reviews").select("id",{count:"exact",head:true}).eq("status","pending")]);
-  return {rp:a.count||0,rv:b.count||0};
+  try{return await api("/admin/counts")}catch(e){return {rp:0,rv:0}}
 }
 async function shell(){
   const c=await counts();
@@ -79,7 +79,7 @@ async function shell(){
   <nav class="tabs" role="tablist"><button role="tab" data-t="stats">สถิติ</button><button role="tab" data-t="reports">แจ้งปัญหา${c.rp?`<span class="badge">${c.rp}</span>`:""}</button><button role="tab" data-t="reviews">รีวิว${c.rv?`<span class="badge">${c.rv}</span>`:""}</button></nav>
   <button class="ghost" id="out">ออกจากระบบ</button></div></header><main class="in" id="main"></main>`;
   document.querySelectorAll("nav.tabs button").forEach(b=>{b.setAttribute("aria-selected",b.dataset.t===tab);b.onclick=()=>{tab=b.dataset.t;shell()}});
-  $("#out").onclick=async()=>{await sb.auth.signOut();loginView()};
+  $("#out").onclick=()=>{TOKEN=null;try{localStorage.removeItem("icb-admin")}catch(e){}loginView()};
   ({stats,reports,reviews})[tab]();
 }
 function list(rows,label,val,fmtLabel){
@@ -89,8 +89,7 @@ function list(rows,label,val,fmtLabel){
 }
 async function stats(){
   const M=$("#main");M.innerHTML=`<div class="empty">กำลังโหลดสถิติ…</div>`;
-  const {data,error}=await sb.rpc("admin_stats",{days});
-  if(error){M.innerHTML=`<div class="card">โหลดสถิติไม่ได้: ${esc(error.message)}</div>`;return}
+  let data;try{data=await api("/admin/stats?days="+days)}catch(e){M.innerHTML=`<div class="card">โหลดสถิติไม่ได้: ${esc(e.message)}</div>`;return}
   const t=data.totals,dl=data.daily||[];
   const filled=[];const d0=new Date();d0.setHours(0,0,0,0);
   for(let i=Math.min(days,60)-1;i>=0;i--){const d=new Date(d0);d.setDate(d.getDate()-i);const k=d.toLocaleDateString("sv-SE",{timeZone:"Asia/Bangkok"});const r=dl.find(x=>x.day===k)||{visitors:0,views:0,compares:0};filled.push({k,...r})}
@@ -100,42 +99,35 @@ async function stats(){
   M.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><b>ภาพรวม</b><select class="days" id="days">${[7,30,90,365].map(d=>`<option value="${d}" ${d===days?"selected":""}>${d} วันล่าสุด</option>`).join("")}</select></div>
   <div class="kpis"><div class="kpi"><b>${fmt(t.today_visitors)}</b><span>คนเข้าเว็บวันนี้</span></div><div class="kpi"><b>${fmt(t.visitors)}</b><span>คนเข้าเว็บ (${days} วัน)</span></div><div class="kpi"><b>${fmt(t.views)}</b><span>จำนวนหน้าที่เปิด</span></div><div class="kpi"><b>${fmt(t.compares)}</b><span>ครั้งที่กดเปรียบเทียบ</span></div></div>
   <div class="card"><h2>คนเข้าเว็บรายวัน</h2><div class="chart">${filled.map(r=>`<div class="c" title="${r.k}: ${r.visitors} คน · ${r.views} หน้า"><i style="height:${(r.visitors/mx*100).toFixed(1)}%"></i><small>${filled.length<=31||r.k.endsWith("01")?r.k.slice(8):""}</small></div>`).join("")}</div><div class="legend">นับเป็นจำนวนคน (1 คนต่อ 1 แท็บเบราว์เซอร์) ไม่ใช้คุกกี้</div></div>
-  <div class="cols"><div class="card"><h2>รุ่นที่ถูกดู/เทียบมากที่สุด</h2>${list(data.products,"id","n",id=>esc(nm(id)))}</div>
+  <div class="cols"><div class="card"><h2>รุ่นที่ถูกดู/เทียบมากที่สุด</h2>${list(data.products,"pid","n",id=>esc(nm(id)))}</div>
   <div class="card"><h2>คู่ที่ถูกเทียบบ่อยที่สุด</h2>${list(data.pairs,"pair","n",p=>p.split(" | ").map(x=>esc(nm(x))).join(" <span style='color:var(--ink3)'>vs</span> "))}</div>
   <div class="card"><h2>หน้าที่ถูกเปิดมากที่สุด</h2>${list(data.pages,"path","n",p=>{const m=p.match(/^\/p\/([^/]+)/);return esc(m?nm(m[1]):p==="/"?"หน้าแรก (เปรียบเทียบ)":p)})}</div>
   <div class="card"><h2>คนมาจากไหน</h2>${list(data.refs,"src","n")}</div>
   <div class="card"><h2>หมวดยอดนิยม</h2>${list(data.cats,"cat","n",c=>esc(CATN[c]||c))}</div>
-  <div class="card"><h2>อุปกรณ์</h2>${list(data.devices,"device","n",d=>esc(DEV[d]||d))}</div></div>`;
+  <div class="card"><h2>อุปกรณ์</h2>${list(data.devices,"device","n",d=>esc(DEV[d]||d))}</div>
+  <div class="card"><h2>ประเทศ</h2>${list(data.countries,"country","n")}</div></div>`;
   $("#days").onchange=e=>{days=+e.target.value;stats()};
 }
 function filters(cur,opts,cb){return `<div class="filters">${opts.map(o=>`<button data-v="${o}" aria-pressed="${o===cur}">${o==="all"?"ทั้งหมด":ST[o]}</button>`).join("")}</div>`}
 async function reports(){
-  const M=$("#main");let q=sb.from("reports").select("*").order("ts",{ascending:false}).limit(200);if(rpFilter!=="all")q=q.eq("status",rpFilter);
-  const {data,error}=await q;if(error){M.innerHTML=`<div class="card">${esc(error.message)}</div>`;return}
+  const M=$("#main");let data;try{data=await api("/admin/list?t=reports&status="+rpFilter)}catch(e){M.innerHTML=`<div class="card">${esc(e.message)}</div>`;return}
   M.innerHTML=filters(rpFilter,["new","done","ignored","all"])+(data.length?data.map(r=>`<div class="item"><div class="top"><span class="pill ${r.status}">${ST[r.status]}</span><b>${esc(KIND[r.kind]||r.kind)}</b>${r.product_name?`<span>· ${esc(r.product_name)}</span>`:""}</div>
    <p>${esc(r.message)}</p><div class="meta">${when(r.ts)}${r.contact?` · ติดต่อกลับ: ${esc(r.contact)}`:""}${r.page?` · <a href="${esc(r.page)}" target="_blank" rel="noopener">หน้าที่แจ้ง</a>`:""}</div>
    <div class="acts">${r.status!=="done"?`<button class="b-ok" data-id="${r.id}" data-s="done">แก้แล้ว</button>`:""}${r.status!=="ignored"?`<button class="b-bad" data-id="${r.id}" data-s="ignored">ไม่ดำเนินการ</button>`:""}${r.status!=="new"?`<button class="b-n" data-id="${r.id}" data-s="new">กลับเป็นใหม่</button>`:""}</div></div>`).join(""):`<div class="empty">ไม่มีรายการ</div>`);
   M.querySelectorAll(".filters button").forEach(b=>b.onclick=()=>{rpFilter=b.dataset.v;reports()});
-  M.querySelectorAll(".acts button").forEach(b=>b.onclick=async()=>{b.disabled=true;await sb.from("reports").update({status:b.dataset.s}).eq("id",b.dataset.id);shell()});
+  M.querySelectorAll(".acts button").forEach(b=>b.onclick=async()=>{b.disabled=true;await api("/admin/update",{t:"reports",id:+b.dataset.id,status:b.dataset.s});shell()});
 }
 async function reviews(){
-  const M=$("#main");let q=sb.from("reviews").select("*").order("ts",{ascending:false}).limit(200);if(rvFilter!=="all")q=q.eq("status",rvFilter);
-  const {data,error}=await q;if(error){M.innerHTML=`<div class="card">${esc(error.message)}</div>`;return}
+  const M=$("#main");let data;try{data=await api("/admin/list?t=reviews&status="+rvFilter)}catch(e){M.innerHTML=`<div class="card">${esc(e.message)}</div>`;return}
   M.innerHTML=filters(rvFilter,["pending","approved","rejected","all"])+(data.length?data.map(r=>`<div class="item"><div class="top"><span class="pill ${r.status}">${ST[r.status]}</span><span class="st">${"★".repeat(r.rating)}${"☆".repeat(5-r.rating)}</span><b>${esc(r.name)}</b><span>· <a href="/p/${encodeURIComponent(r.product_id)}/" target="_blank">${esc(r.product_name||nm(r.product_id))}</a></span></div>
    <p>${esc(r.body)}</p><div class="meta">${when(r.ts)}</div>
    <div class="acts">${r.status!=="approved"?`<button class="b-ok" data-id="${r.id}" data-s="approved">อนุมัติ (ขึ้นเว็บ)</button>`:""}${r.status!=="rejected"?`<button class="b-bad" data-id="${r.id}" data-s="rejected">ไม่อนุมัติ</button>`:""}<button class="b-n" data-id="${r.id}" data-del="1">ลบ</button></div></div>`).join(""):`<div class="empty">ไม่มีรายการ</div>`);
   M.querySelectorAll(".filters button").forEach(b=>b.onclick=()=>{rvFilter=b.dataset.v;reviews()});
   M.querySelectorAll(".acts button").forEach(b=>b.onclick=async()=>{
-    if(b.dataset.del){if(!b.dataset.c){b.dataset.c=1;b.textContent="ยืนยันลบ?";return}await sb.from("reviews").delete().eq("id",b.dataset.id)}
-    else await sb.from("reviews").update({status:b.dataset.s}).eq("id",b.dataset.id);
+    if(b.dataset.del){if(!b.dataset.c){b.dataset.c=1;b.textContent="ยืนยันลบ?";return}await api("/admin/update",{t:"reviews",id:+b.dataset.id,delete:true})}
+    else await api("/admin/update",{t:"reviews",id:+b.dataset.id,status:b.dataset.s});
     shell()});
 }
-async function boot(){
-  const {data:{session}}=await sb.auth.getSession();
-  if(!session)return loginView();
-  const t=await sb.rpc("admin_stats",{days:1});
-  if(t.error&&/not allowed/.test(t.error.message)){await sb.auth.signOut();return loginView("บัญชีนี้ไม่มีสิทธิ์เข้าหลังบ้าน")}
-  shell();
-}
+function boot(){if(!/^https:\/\//.test(API)){app.innerHTML='<div class="login"><h1>ยังไม่ได้เชื่อมระบบหลังบ้าน</h1></div>';return}if(!TOKEN)return loginView();shell()}
 boot();
 </script></body></html>

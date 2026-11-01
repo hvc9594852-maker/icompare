@@ -1,17 +1,15 @@
-/* iCompare backend client: stats, reports, reviews (Supabase REST, no cookies) */
+/* iCompare backend client: stats, reports, reviews (Cloudflare Worker API, no cookies) */
 (function () {
-  var CFG = { url: "__SB_URL__", key: "__SB_KEY__" };
-  var ON = /^https:\/\/.+\.supabase\.co$/.test(CFG.url) && CFG.key.length > 20;
+  var API = "__API__";
+  var ON = /^https:\/\//.test(API);
   var sid;
   try { sid = sessionStorage.getItem("icb-sid"); if (!sid) { sid = Math.random().toString(36).slice(2) + Date.now().toString(36); sessionStorage.setItem("icb-sid", sid); } } catch (e) { sid = "x" + Math.random().toString(36).slice(2); }
   var device = /iPad|Tablet/i.test(navigator.userAgent) ? "tablet" : (/Mobi|Android|iPhone/i.test(navigator.userAgent) ? "mobile" : "desktop");
   function api(path, opt) {
     if (!ON) return Promise.reject(new Error("backend not configured"));
     opt = opt || {};
-    var h = { apikey: CFG.key, Authorization: "Bearer " + CFG.key, "Content-Type": "application/json" };
-    if (opt.prefer) h.Prefer = opt.prefer;
-    return fetch(CFG.url + "/rest/v1/" + path, { method: opt.method || "GET", headers: h, body: opt.body ? JSON.stringify(opt.body) : undefined, keepalive: !!opt.keepalive })
-      .then(function (r) { if (!r.ok) return r.text().then(function (t) { throw new Error(t || r.status); }); return r.status === 204 || r.status === 201 ? null : r.json(); });
+    return fetch(API + path, { method: opt.method || "GET", headers: opt.body ? { "Content-Type": "application/json" } : {}, body: opt.body ? JSON.stringify(opt.body) : undefined, keepalive: !!opt.keepalive })
+      .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || r.status); return j; }); });
   }
   var lastKey = "";
   function track(type, d) {
@@ -21,7 +19,7 @@
     if (type !== "view" && key === lastKey) return; lastKey = key;
     var ref = "";
     try { if (document.referrer && new URL(document.referrer).host !== location.host) ref = document.referrer.slice(0, 300); } catch (e) {}
-    api("events", { method: "POST", prefer: "return=minimal", keepalive: true, body: { type: type, path: location.pathname.slice(0, 300), cat: d.cat || null, items: d.items ? d.items.slice(0, 3) : null, ref: type === "view" ? ref || null : null, sid: sid, device: device } }).catch(function () {});
+    api("/e", { method: "POST", keepalive: true, body: { type: type, path: location.pathname.slice(0, 300), cat: d.cat || null, items: d.items ? d.items.slice(0, 3) : null, ref: type === "view" ? ref || null : null, sid: sid, device: device } }).catch(function () {});
   }
   var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
   var stars = function (n) { n = Math.round(n); return "★★★★★".slice(0, n) + "☆☆☆☆☆".slice(0, 5 - n); };
@@ -70,9 +68,9 @@
         if (f.dataset.f === "report") fd.page = location.href.slice(0, 300);
         Object.keys(fd).forEach(function (k) { if (fd[k] === "") fd[k] = null; });
         b.disabled = true; m.textContent = "กำลังส่ง…";
-        api(f.dataset.f === "review" ? "reviews" : "reports", { method: "POST", prefer: "return=minimal", body: fd })
+        api(f.dataset.f === "review" ? "/review" : "/report", { method: "POST", body: fd })
           .then(function () { f.reset(); f.querySelectorAll(".rate span").forEach(function (s) { s.classList.remove("on"); }); m.textContent = f.dataset.f === "review" ? "ส่งรีวิวแล้ว ขอบคุณครับ! จะแสดงหลังตรวจสอบ" : "ได้รับแจ้งแล้ว ขอบคุณที่ช่วยให้ข้อมูลถูกต้องขึ้นครับ"; })
-          .catch(function () { m.textContent = "ส่งไม่สำเร็จ ลองใหม่อีกครั้ง"; })
+          .catch(function (er) { m.textContent = /rate/.test(er.message) ? "ส่งบ่อยเกินไป ลองใหม่ภายหลัง" : "ส่งไม่สำเร็จ ลองใหม่อีกครั้ง"; })
           .then(function () { b.disabled = false; });
       });
     });
@@ -83,7 +81,7 @@
     el.innerHTML = '<h3>รีวิวจากผู้ใช้</h3><div class="icb-list muted">กำลังโหลดรีวิว…</div>' + reviewForm(pid, name) +
       '<h3>เจอข้อมูลผิด?</h3><div class="muted">แจ้งเราได้ ทีมงานจะตรวจสอบและแก้ไข</div>' + reportForm({ id: pid, name: name });
     wire(el);
-    api("reviews?select=name,rating,body,ts&product_id=eq." + encodeURIComponent(pid) + "&status=eq.approved&order=ts.desc&limit=50").then(function (rows) {
+    api("/reviews?pid=" + encodeURIComponent(pid)).then(function (rows) {
       var L = el.querySelector(".icb-list");
       if (!rows.length) { L.textContent = "ยังไม่มีรีวิว เป็นคนแรกที่รีวิวรุ่นนี้"; return; }
       var avg = rows.reduce(function (a, r) { return a + r.rating; }, 0) / rows.length;
