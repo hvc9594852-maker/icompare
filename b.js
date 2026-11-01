@@ -1,6 +1,6 @@
 /* iCompare backend client: stats, reports, reviews (Cloudflare Worker API, no cookies) */
 (function () {
-  var API = "__API__";
+  var API = "https://icompare-api.hvc9594852.workers.dev";
   var ON = /^https:\/\//.test(API);
   var sid;
   try { sid = sessionStorage.getItem("icb-sid"); if (!sid) { sid = Math.random().toString(36).slice(2) + Date.now().toString(36); sessionStorage.setItem("icb-sid", sid); } } catch (e) { sid = "x" + Math.random().toString(36).slice(2); }

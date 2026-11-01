@@ -48,7 +48,7 @@ select.days{font:inherit;border:1px solid var(--line);border-radius:999px;paddin
 </style></head><body>
 <div id="app"></div>
 <script>
-const API="__API__";
+const API="https://icompare-api.hvc9594852.workers.dev";
 let TOKEN=null;try{TOKEN=localStorage.getItem("icb-admin")}catch(e){}
 async function api(path,body){const r=await fetch(API+path,{method:body?"POST":"GET",headers:{...(body?{"Content-Type":"application/json"}:{}),...(TOKEN?{Authorization:"Bearer "+TOKEN}:{})},body:body?JSON.stringify(body):undefined});
   const j=await r.json().catch(()=>({}));if(r.status===401&&path!=="/admin/login"){TOKEN=null;try{localStorage.removeItem("icb-admin")}catch(e){}loginView("หมดเวลาเข้าสู่ระบบ กรุณาเข้าใหม่");throw new Error("auth")}if(!r.ok)throw new Error(j.error||r.status);return j}
