@@ -306,6 +306,7 @@ footer a{color:var(--ink-2);text-decoration:none;border-bottom:1px solid var(--l
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
 .catlinks{display:flex;flex-wrap:wrap;gap:6px 16px;margin-bottom:14px;font-size:14px}.catlinks b{width:100%;font-weight:600;color:var(--ink)}.catlinks a{color:var(--brand)}
+.buy{display:inline-flex;align-items:center;justify-content:center;background:#ee4d2d;color:#fff!important;text-decoration:none;font-weight:600;border-radius:999px;padding:8px 14px;font-size:13px;line-height:1.2;white-space:nowrap;transition:filter .15s}.buy:hover{filter:brightness(1.08)}.hp .buy{margin-top:8px;align-self:flex-start}.verdict-buy{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}.aff{font-size:12px;opacity:.8}
 </style>
 
 <nav class="band"><div class="in">
@@ -355,6 +356,7 @@ footer a{color:var(--ink-2);text-decoration:none;border-bottom:1px solid var(--l
   <p style="margin:0 0 14px"><a href="#" data-icb-report hidden style="color:var(--brand)">แจ้งข้อมูลผิด / ขอเพิ่มรุ่น</a></p>
   <nav class="catlinks" aria-label="หมวดสินค้าทั้งหมด"><b>ดูสเปกตามหมวด</b><a href="/c/phone/">มือถือ</a><a href="/c/tablet/">แท็บเล็ต</a><a href="/c/mac/">แล็ปท็อป</a><a href="/c/tv/">ทีวี</a><a href="/c/audio/">หูฟัง</a><a href="/c/camera/">กล้อง</a><a href="/c/keyboard/">คีย์บอร์ด</a><a href="/c/mouse/">เมาส์</a><a href="/c/watch/">สมาร์ตวอทช์</a><a href="/c/gpu/">การ์ดจอ</a><a href="/c/cpu/">ซีพียู</a><a href="/c/chipset/">ชิปมือถือ</a></nav>
   <p>คะแนน iCompare คำนวณจากสเปกที่ผู้ผลิตเปิดเผยจริง ปรับเป็น 40–100 ภายในหมวด กลุ่มที่เลือก “เน้น” มีน้ำหนัก 3 เท่า ความคุ้ม = คะแนนต่อราคา 10,000 บาท ราคาเป็นราคาเปิดตัวหรือราคาตั้งในไทย อาจต่างจากหน้าร้านและโปรโมชัน ราคาที่มาจากสหรัฐฯ แปลงเป็นบาทที่ประมาณ 33 บาท/ดอลลาร์ เพราะยังไม่พบราคาไทยที่ยืนยันได้ หมวดมือถือมีมากกว่า 500 รุ่น รุ่นที่เลิกขายหรือยังไม่มีราคาไทยที่ยืนยันได้จะไม่ถูกคิดความคุ้ม สเปกรุ่นที่ออกระหว่าง ก.ค.–ต.ค. 2569 และราคาไทยตรวจจากแหล่งที่ลิงก์ไว้ ส่วนสเปกรุ่นก่อนหน้ารวบรวมจากตัวเลขที่ผู้ผลิตประกาศตอนเปิดตัว (บางรุ่นต่างกันตามภูมิภาค เช่น ชิป Exynos / Snapdragon) ตรวจซ้ำรายรุ่นได้ที่ GSMArena ภาพสินค้าเป็นภาพทางการจากเว็บไซต์ผู้ผลิต (ลิขสิทธิ์ของเจ้าของแบรนด์) รุ่นที่ยังไม่มีภาพทางการแสดงเป็นภาพวาด</p>
+  <p class="aff">ลิงก์ไปร้านค้าบางลิงก์เป็นลิงก์พันธมิตร (affiliate) หากคุณซื้อผ่านลิงก์ iCompare อาจได้รับค่าคอมมิชชัน โดยคุณไม่ต้องจ่ายเพิ่ม</p>
   <ul id="src"></ul>
   <details class="credits"><summary>เครดิตรูปภาพ · ส่วนใหญ่เป็นภาพสินค้าทางการจากเว็บไซต์ผู้ผลิต บางส่วนมาจากคลังรูปที่ผู้ใช้รวบรวม (ระบุไว้ในรายการ) ลิขสิทธิ์เป็นของเจ้าของแบรนด์ ใช้เพื่อการเปรียบเทียบสินค้าเท่านั้น</summary><ul id="credits"></ul></details>
 </div></footer>
@@ -530,6 +532,9 @@ const st={cat:"phone",focus:"balanced",budget:130000,sel:{phone:[],tablet:[],mac
 try{const v=localStorage.getItem("icmp-cat");if(v&&CATS.some(c=>c.id===v))st.cat=v}catch(e){}
 const $=s=>document.querySelector(s);
 const fmt=(p,c)=>"฿"+(c==="USD"?THB(p):p).toLocaleString("th-TH");
+const AFF="15307650350";
+function shpKw(p){const n=p.name,b=p.brand||"";return !b||b==="Apple"||n.toLowerCase().includes(b.toLowerCase())?n:b+" "+n}
+function shp(p){if(!p||p.cat==="chipset")return "";return `<a class="buy" href="https://shopee.co.th/universal-link/search?utm_source=an_${AFF}&amp;utm_medium=affiliates&amp;utm_campaign=-&amp;utm_content=icompare----&amp;keyword=${encodeURIComponent(shpKw(p))}" target="_blank" rel="sponsored nofollow noopener" onclick="event.stopPropagation()">ดูราคาใน Shopee</a>`}
 const byId=id=>P.find(p=>p.id===id);
 function mix(hex,amt){const n=parseInt(hex.slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;const t=amt<0?0:255,a=Math.abs(amt);r=Math.round(r+(t-r)*a);g=Math.round(g+(t-g)*a);b=Math.round(b+(t-b)*a);return"#"+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1)}
 const tint=p=>mix(p.hue,p.hue==="#e9e9e6"?-.03:.84);
@@ -733,7 +738,7 @@ function openSheet(items){try{if(window.iCB&&items.length>=2)iCB.track("sheet",{
     if(rows)html+=`<tr class="sec${allSame?" allsame":""}" id="sec${i}"><th colspan="${n+1}">${s}</th></tr>${rows}`;
   });
   const most=Math.max(...wins);
-  const head=`<table class="dt" id="dt"><thead><tr><th></th>${sheetItems.map((p,j)=>`<th><div class="hp"><div class="mini" style="background:${p.img?"#fff":tint(p)}">${art(p)}</div><b>${p.name}</b><span class="num">${p.price!=null?fmt(p.price,p.cur):p.note}</span>${n>1?`<span class="tally${wins[j]===most&&most>0?" lead":""}">ชนะ ${wins[j]} หัวข้อ</span>`:""}</div></th>`).join("")}</tr></thead>`;
+  const head=`<table class="dt" id="dt"><thead><tr><th></th>${sheetItems.map((p,j)=>`<th><div class="hp"><div class="mini" style="background:${p.img?"#fff":tint(p)}">${art(p)}</div><b>${p.name}</b><span class="num">${p.price!=null?fmt(p.price,p.cur):p.note}</span>${shp(p)}${n>1?`<span class="tally${wins[j]===most&&most>0?" lead":""}">ชนะ ${wins[j]} หัวข้อ</span>`:""}</div></th>`).join("")}</tr></thead>`;
   html=head+html;
   html+=`</tbody></table>${sheetItems.some(p=>p.xcat||p.lap)?`<p class="srcline">หมวดนี้ (และรุ่นแล็ปท็อปจากแค็ตตาล็อก) เป็นสเปกหลักตามที่ผู้ผลิตเคยประกาศ รวบรวมเพื่อการเทียบเบื้องต้น ยังไม่ได้ตรวจทานกับแหล่งอ้างอิงทีละรุ่น ตัวเลขบางรายการเป็นค่าประมาณ (เช่น น้ำหนัก แบตเตอรี่) ควรเช็กกับหน้าสินค้าก่อนซื้อ</p>`:""}<p class="srcline">“ยังไม่มีข้อมูลยืนยัน” คือรายละเอียดที่เรายังไม่พบจากผู้ผลิตหรือแหล่งที่เชื่อถือได้ ไม่ได้แปลว่าไม่มีฟีเจอร์นั้น · แหล่งข้อมูล: ${[...new Set([...(DSRC[st.cat]||[]),...sheetItems.flatMap(p=>p.src||[])])].filter(k=>S[k]).map(k=>`<a href="${S[k][1]}" target="_blank" rel="noopener">${S[k][0]}</a>`).join(" · ")}</p>`;
   $("#sheetBody").innerHTML=html;$("#sheetBody").scrollTop=0;
@@ -1063,7 +1068,7 @@ function renderVerdict(){
   if(valueMode&&items.length>=2){const gone=items.filter(p=>sc[p.id].value==null);if(gone.length)why+=` (${gone.map(p=>p.name).join(", ")} ไม่มีราคาไทยจึงไม่ได้คิดความคุ้ม)`}
   if(w.deal)why+=` และตอนนี้มีโปรลดเหลือ ${fmt(w.deal[1],"THB")}`;
   $("#verdict").innerHTML=`<div><span class="mono">ถ้าต้องเลือกแค่หนึ่ง</span><h3>${w.name}</h3><p>${why}</p>
-    <div class="stats"><div><b class="num">${sc[w.id].score}</b>คะแนน iCompare</div><div><b class="num">${w.price!=null?fmt(w.price,w.cur):(w.year||"—")}</b>${w.price!=null?w.note:"ปีที่เปิดตัว"}</div>${valueMode?`<div><b class="num">${sc[w.id].value.toFixed(1)}</b>คะแนนต่อ ฿10,000</div>`:""}</div></div>
+    <div class="stats"><div><b class="num">${sc[w.id].score}</b>คะแนน iCompare</div><div><b class="num">${w.price!=null?fmt(w.price,w.cur):(w.year||"—")}</b>${w.price!=null?w.note:"ปีที่เปิดตัว"}</div>${valueMode?`<div><b class="num">${sc[w.id].value.toFixed(1)}</b>คะแนนต่อ ฿10,000</div>`:""}</div>${shp(w)?`<div class="verdict-buy">${shp(w)}</div>`:""}</div>
     <div class="art">${art(w)}</div>`;
 }
 const shelf={q:"",brand:"all",sort:"new",priced:false,limit:24};
@@ -1143,5 +1148,4 @@ if(!/claude\.ai|claudeusercontent/.test(location.host))fetch("photos-extra.json"
   addEventListener("scroll",()=>{if(!tk){tk=1;requestAnimationFrame(upd)}},{passive:true});
   nv.addEventListener("click",e=>{if(nv.classList.contains("mini")){nv.classList.remove("mini");e.stopPropagation()}},true);})();
 </script>
-
 </html>

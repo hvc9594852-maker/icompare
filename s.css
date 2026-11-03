@@ -15,7 +15,7 @@ h2{font-size:21px;margin:34px 0 10px}
 .pic{aspect-ratio:1;border-radius:28px;background:var(--mist);display:grid;place-items:center;overflow:hidden}
 .pic img{width:86%;height:86%;object-fit:contain}
 .spr{width:86%;height:86%;background-repeat:no-repeat}
-.meta{color:var(--ink2)}.price{font-size:28px;font-weight:600;margin:6px 0 2px}
+.meta{color:var(--ink2)}.buy{display:inline-flex;align-items:center;gap:6px;background:#ee4d2d;color:#fff!important;text-decoration:none;font-weight:600;border-radius:999px;padding:10px 18px;font-size:15px;margin:10px 8px 0 0}.buy:hover{filter:brightness(1.07)}.aff{font-size:12px;color:var(--ink3);margin:6px 0 0}.price{font-size:28px;font-weight:600;margin:6px 0 2px}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 18px}.chip{background:var(--mist);border-radius:999px;padding:5px 12px;font-size:14px;color:var(--ink2)}
 .score{display:inline-block;background:#e9ebfd;color:var(--brand);border-radius:12px;padding:4px 10px;font-weight:600}
 table{width:100%;border-collapse:collapse;font-size:15px}
