@@ -1764,10 +1764,12 @@
 <url><loc>https://icompare.work/vs/c140-galaxy-a34-5g--c141-galaxy-a35-5g/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c141-galaxy-a35-5g--c142-galaxy-a36-5g/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c141-galaxy-a35-5g--c219-redmi-note-14-pro-5g/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
+<url><loc>https://icompare.work/vs/c142-galaxy-a36-5g--c149-galaxy-a56-5g/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c142-galaxy-a36-5g--c219-redmi-note-14-pro-5g/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c147-galaxy-a54-5g--c148-galaxy-a55-5g/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c148-galaxy-a55-5g--c149-galaxy-a56-5g/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c148-galaxy-a55-5g--c228-poco-f7/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
+<url><loc>https://icompare.work/vs/c149-galaxy-a56-5g--c220-redmi-note-14-pro-5g/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c149-galaxy-a56-5g--c228-poco-f7/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c159-galaxy-m34-5g--c160-galaxy-m35-5g/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c160-galaxy-m35-5g--c161-galaxy-m55-5g/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
@@ -1790,6 +1792,7 @@
 <url><loc>https://icompare.work/vs/c190-xiaomi-15-ultra--c247-oppo-find-x9-pro/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c190-xiaomi-15-ultra--c334-huawei-pura-70-ultra/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c190-xiaomi-15-ultra--c452-motorola-razr-60-ultra/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
+<url><loc>https://icompare.work/vs/c190-xiaomi-15-ultra--s26u/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c191-xiaomi-17--c294-vivo-x300/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c191-xiaomi-17--c436-rog-phone-9/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c191-xiaomi-17--c450-motorola-razr-50-ultra/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
@@ -1822,6 +1825,7 @@
 <url><loc>https://icompare.work/vs/c227-poco-f6-pro--c471-realme-13-pro/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c227-poco-f6-pro--c472-realme-14-pro/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c227-poco-f6-pro--c505-oneplus-nord-4/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
+<url><loc>https://icompare.work/vs/c228-poco-f7--c479-realme-gt-7/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c229-poco-f7-pro--c305-vivo-v40-5g/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c229-poco-f7-pro--c306-vivo-v50/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c229-poco-f7-pro--c307-vivo-v60/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
@@ -1837,8 +1841,10 @@
 <url><loc>https://icompare.work/vs/c245-oppo-find-x8-pro--c292-vivo-x200-pro/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c245-oppo-find-x8-pro--c295-vivo-x300-pro/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c245-oppo-find-x8-pro--c365-honor-magic8-pro/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
+<url><loc>https://icompare.work/vs/c246-oppo-find-x9--c294-vivo-x300/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c246-oppo-find-x9--c323-iqoo-15/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c246-oppo-find-x9--c333-huawei-pura-70-pro/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
+<url><loc>https://icompare.work/vs/c247-oppo-find-x9-pro--c295-vivo-x300-pro/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c247-oppo-find-x9-pro--c334-huawei-pura-70-ultra/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c247-oppo-find-x9-pro--c452-motorola-razr-60-ultra/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c250-oppo-find-n2-flip--c252-oppo-find-n3-flip/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
@@ -1964,6 +1970,7 @@
 <url><loc>https://icompare.work/vs/c406-pixel-10-pro-xl--c437-rog-phone-9-pro/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c41-iphone-15-pro-max--c45-iphone-16-pro-max/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c42-iphone-16--c47-iphone-17/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
+<url><loc>https://icompare.work/vs/c42-iphone-16--c51-iphone-17e/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c421-xperia-1-v--c426-xperia-5-v/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c422-xperia-1-vi--c427-xperia-10-vi/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c422-xperia-1-vi--c87-galaxy-s24-ultra/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
@@ -1990,6 +1997,10 @@
 <url><loc>https://icompare.work/vs/c46-iphone-16e--c51-iphone-17e/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c461-motorola-edge-60-pro--c477-realme-gt-6/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c469-realme-11-pro--c470-realme-12-pro/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
+<url><loc>https://icompare.work/vs/c47-iphone-17--c48-iphone-air/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
+<url><loc>https://icompare.work/vs/c47-iphone-17--c49-iphone-17-pro/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
+<url><loc>https://icompare.work/vs/c47-iphone-17--c89-galaxy-s25/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
+<url><loc>https://icompare.work/vs/c47-iphone-17--s26/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c470-realme-12-pro--c471-realme-13-pro/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c471-realme-13-pro--c472-realme-14-pro/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/c476-realme-gt-5-pro--c478-realme-gt-7-pro/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
@@ -2207,6 +2218,8 @@
 <url><loc>https://icompare.work/vs/gp225-amd-radeon-rx-7700-xt--gp226-amd-radeon-rx-7800-xt/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/gp230-amd-radeon-rx-9060-xt--gp232-amd-radeon-rx-9070-xt/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/gp237-intel-arc-b570--gp238-intel-arc-b580/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
+<url><loc>https://icompare.work/vs/ip18p--s26u/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
+<url><loc>https://icompare.work/vs/ip18pm--s26u/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/ipa--tb15-galaxy-tab-s10-fe/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/ipa--tb31-huawei-matepad-pro-12-2-papermatte/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
 <url><loc>https://icompare.work/vs/ipp--tab/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
