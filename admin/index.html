@@ -49,7 +49,7 @@ select.days{font:inherit;border:1px solid var(--line);border-radius:999px;paddin
 <div id="app"></div>
 <script>
 const API="https://icompare-api.hvc9594852.workers.dev";
-let TOKEN=null;try{TOKEN=localStorage.getItem("icb-admin")}catch(e){}
+let TOKEN=null;try{TOKEN=localStorage.getItem("icb-admin");localStorage.setItem("icmp-notrack","1")}catch(e){}
 async function api(path,body){const r=await fetch(API+path,{method:body?"POST":"GET",headers:{...(body?{"Content-Type":"application/json"}:{}),...(TOKEN?{Authorization:"Bearer "+TOKEN}:{})},body:body?JSON.stringify(body):undefined});
   const j=await r.json().catch(()=>({}));if(r.status===401&&path!=="/admin/login"){TOKEN=null;try{localStorage.removeItem("icb-admin")}catch(e){}loginView("หมดเวลาเข้าสู่ระบบ กรุณาเข้าใหม่");throw new Error("auth")}if(!r.ok)throw new Error(j.error||r.status);return j}
 const $=s=>document.querySelector(s),app=$("#app");
@@ -60,6 +60,7 @@ let NAMES={};fetch("/admin/names.json").then(r=>r.json()).then(j=>NAMES=j).catch
 const nm=id=>NAMES[id]?NAMES[id][0]:id;
 const KIND={price:"ราคาไม่ถูกต้อง",spec:"สเปกไม่ถูกต้อง",photo:"รูปภาพ",missing:"ขอเพิ่มรุ่น",other:"อื่นๆ"};
 const ST={new:"ใหม่",done:"แก้แล้ว",ignored:"ไม่ดำเนินการ",pending:"รออนุมัติ",approved:"อนุมัติแล้ว",rejected:"ไม่อนุมัติ"};
+let clean=true,thOnly=false;try{clean=localStorage.getItem("icb-clean")!=="0";thOnly=localStorage.getItem("icb-th")==="1"}catch(e){}
 let tab="stats",days=30,rpFilter="new",rvFilter="pending";
 
 function loginView(msg){
@@ -89,24 +90,33 @@ function list(rows,label,val,fmtLabel){
 }
 async function stats(){
   const M=$("#main");M.innerHTML=`<div class="empty">กำลังโหลดสถิติ…</div>`;
-  let data;try{data=await api("/admin/stats?days="+days)}catch(e){M.innerHTML=`<div class="card">โหลดสถิติไม่ได้: ${esc(e.message)}</div>`;return}
+  let data;try{data=await api("/admin/stats?days="+days+"&clean="+(clean?1:0)+"&th="+(thOnly?1:0))}catch(e){M.innerHTML=`<div class="card">โหลดสถิติไม่ได้: ${esc(e.message)}</div>`;return}
   const t=data.totals,dl=data.daily||[];
   const filled=[];const d0=new Date();d0.setHours(0,0,0,0);
   for(let i=Math.min(days,60)-1;i>=0;i--){const d=new Date(d0);d.setDate(d.getDate()-i);const k=d.toLocaleDateString("sv-SE",{timeZone:"Asia/Bangkok"});const r=dl.find(x=>x.day===k)||{visitors:0,views:0,compares:0};filled.push({k,...r})}
   const mx=Math.max(1,...filled.map(r=>r.visitors));
   const CATN={phone:"มือถือ",tablet:"แท็บเล็ต",mac:"แล็ปท็อป",tv:"ทีวี",audio:"หูฟัง",camera:"กล้อง",keyboard:"คีย์บอร์ด",mouse:"เมาส์",watch:"สมาร์ตวอทช์",gpu:"การ์ดจอ",cpu:"ซีพียู",chipset:"ชิปมือถือ"};
   const DEV={mobile:"มือถือ",desktop:"คอมพิวเตอร์",tablet:"แท็บเล็ต"};
-  M.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><b>ภาพรวม</b><select class="days" id="days">${[7,30,90,365].map(d=>`<option value="${d}" ${d===days?"selected":""}>${d} วันล่าสุด</option>`).join("")}</select></div>
+  const tm=data.time||{},mins=ms=>{ms=ms||0;if(ms<60e3)return Math.round(ms/1e3)+" วินาที";const m=Math.floor(ms/60e3),sec=Math.round(ms%60e3/1e3);return m+" นาที"+(sec?" "+sec+" วินาที":"")};
+  const pct=(a,b)=>b?Math.round(a/b*100)+"%":"–",CATN0={phone:"มือถือ",tablet:"แท็บเล็ต",mac:"แล็ปท็อป",tv:"ทีวี",audio:"หูฟัง",camera:"กล้อง",keyboard:"คีย์บอร์ด",mouse:"เมาส์",watch:"สมาร์ตวอทช์",gpu:"การ์ดจอ",cpu:"ซีพียู",chipset:"ชิปมือถือ"};
+  const trend=(n,pv)=>pv===0?`<span class="pill new">ใหม่</span>`:n>pv?`<span class="pill done">▲ ${n-pv}</span>`:n<pv?`<span class="pill ignored">▼ ${pv-n}</span>`:`<span class="pill">เท่าเดิม</span>`;
+  M.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px"><b>ภาพรวม</b><div class="filters" style="margin:0"><button id="fClean" aria-pressed="${clean}">ตัดบอทและตัวเอง</button><button id="fTh" aria-pressed="${thOnly}">เฉพาะคนไทย</button><select class="days" id="days">${[7,30,90,365].map(d=>`<option value="${d}" ${d===days?"selected":""}>${d} วันล่าสุด</option>`).join("")}</select></div></div>
+  ${clean?`<div class="legend" style="margin:-4px 0 12px">นับเฉพาะข้อมูลตั้งแต่ ${when(data.cleanSince)} ซึ่งเริ่มกรองบอทและไม่นับเครื่องของแอดมินแล้ว · กด "ตัดบอทและตัวเอง" เพื่อดูข้อมูลเก่าทั้งหมด</div>`:`<div class="legend" style="margin:-4px 0 12px">กำลังดูข้อมูลทั้งหมด รวมบอทและการเข้าเว็บของแอดมินก่อนวันที่เริ่มกรอง</div>`}
+  <div class="kpis" style="margin-bottom:12px"><div class="kpi"><b>${mins(tm.avg)}</b><span>เวลาเฉลี่ยต่อคน</span></div><div class="kpi"><b>${mins(tm.median)}</b><span>เวลากลาง (ครึ่งหนึ่งอยู่นานกว่านี้)</span></div><div class="kpi"><b>${(tm.pages||0).toFixed(1)}</b><span>หน้าที่เปิดต่อคน</span></div><div class="kpi"><b>${pct(t.comparers,t.visitors)}</b><span>คนที่กดเทียบ (${fmt(t.comparers)} คน)</span></div></div>
   <div class="kpis"><div class="kpi"><b>${fmt(t.today_visitors)}</b><span>คนเข้าเว็บวันนี้</span></div><div class="kpi"><b>${fmt(t.visitors)}</b><span>คนเข้าเว็บ (${days} วัน)</span></div><div class="kpi"><b>${fmt(t.views)}</b><span>จำนวนหน้าที่เปิด</span></div><div class="kpi"><b>${fmt(t.compares)}</b><span>ครั้งที่กดเปรียบเทียบ</span></div></div>
   <div class="card"><h2>คนเข้าเว็บรายวัน</h2><div class="chart">${filled.map(r=>`<div class="c" title="${r.k}: ${r.visitors} คน · ${r.views} หน้า"><i style="height:${(r.visitors/mx*100).toFixed(1)}%"></i><small>${filled.length<=31||r.k.endsWith("01")?r.k.slice(8):""}</small></div>`).join("")}</div><div class="legend">นับเป็นจำนวนคน (1 คนต่อ 1 แท็บเบราว์เซอร์) ไม่ใช้คุกกี้</div></div>
-  <div class="cols"><div class="card"><h2>รุ่นที่ถูกดู/เทียบมากที่สุด</h2>${list(data.products,"pid","n",id=>esc(nm(id)))}</div>
-  <div class="card"><h2>คู่ที่ถูกเทียบบ่อยที่สุด</h2>${list(data.pairs,"pair","n",p=>p.split(" | ").map(x=>esc(nm(x))).join(" <span style='color:var(--ink3)'>vs</span> "))}</div>
+  <div class="card"><h2>รุ่นที่ถูกเอามาเทียบมากที่สุด</h2>${(data.topCompared||[]).length?`<div style="overflow-x:auto"><table><tr><th>รุ่น</th><th>หมวด</th><th>ราคา</th><th class="n">ครั้ง</th><th class="n">สัดส่วน</th><th>มักเทียบกับ</th></tr>${data.topCompared.map(g=>`<tr><td><a href="/p/${encodeURIComponent(g.pid)}/" target="_blank">${esc(nm(g.pid))}</a></td><td>${esc(CATN0[g.cat||(NAMES[g.pid]||[])[1]]||"")}</td><td>${esc((NAMES[g.pid]||[])[2]||"–")}</td><td class="n">${fmt(g.n)}</td><td class="n">${pct(g.share,1)}</td><td>${g.rivals.map(r=>`${esc(nm(r.pid))} <span style="color:var(--ink3)">(${r.n})</span>`).join("<br>")||"–"}</td></tr>`).join("")}</table></div><div class="legend">สัดส่วน = รุ่นนี้อยู่ในการเปรียบเทียบกี่ % ของการเปรียบเทียบทั้งหมด · นับทั้งการกดเทียบในหน้าแรกและการเปิดหน้า vs</div>`:`<div class="empty">ยังไม่มีข้อมูล</div>`}</div>
+  <div class="cols"><div class="card"><h2>คู่ยอดฮิตช่วงนี้</h2>${(data.pairs||[]).length?`<table>${data.pairs.map(x=>`<tr><td>${x.pair.split(" | ").map(id=>esc(nm(id))).join(" <span style='color:var(--ink3)'>vs</span> ")}<div class="legend">${fmt(x.people)} คน</div></td><td class="n">${fmt(x.n)} ${trend(x.n,x.prev)}</td></tr>`).join("")}</table><div class="legend">▲▼ = เทียบกับช่วงเวลาก่อนหน้าที่ยาวเท่ากัน</div>`:`<div class="empty">ยังไม่มีข้อมูล</div>`}</div>
+  <div class="card"><h2>อยู่ในเว็บนานแค่ไหน</h2>${tm.sessions?list(tm.buckets,"label","n")+`<div class="legend">จาก ${fmt(tm.sessions)} คนที่วัดเวลาได้ · นับเฉพาะตอนที่เปิดหน้าเว็บอยู่จริง ไม่นับตอนสลับไปแอปอื่น</div>`:`<div class="empty">ยังไม่มีข้อมูลเวลา (เริ่มเก็บหลังอัปเดตระบบ)</div>`}</div>
+  <div class="card"><h2>รุ่นที่ถูกดู/เทียบมากที่สุด</h2>${list(data.products,"pid","n",id=>esc(nm(id)))}</div>
   <div class="card"><h2>หน้าที่ถูกเปิดมากที่สุด</h2>${list(data.pages,"path","n",p=>{const m=p.match(/^\/p\/([^/]+)/);return esc(m?nm(m[1]):p==="/"?"หน้าแรก (เปรียบเทียบ)":p)})}</div>
   <div class="card"><h2>คนมาจากไหน</h2>${list(data.refs,"src","n")}</div>
   <div class="card"><h2>หมวดยอดนิยม</h2>${list(data.cats,"cat","n",c=>esc(CATN[c]||c))}</div>
   <div class="card"><h2>อุปกรณ์</h2>${list(data.devices,"device","n",d=>esc(DEV[d]||d))}</div>
   <div class="card"><h2>ประเทศ</h2>${list(data.countries,"country","n")}</div></div>`;
   $("#days").onchange=e=>{days=+e.target.value;stats()};
+  $("#fClean").onclick=()=>{clean=!clean;try{localStorage.setItem("icb-clean",clean?"1":"0")}catch(e){}stats()};
+  $("#fTh").onclick=()=>{thOnly=!thOnly;try{localStorage.setItem("icb-th",thOnly?"1":"0")}catch(e){}stats()};
 }
 function filters(cur,opts,cb){return `<div class="filters">${opts.map(o=>`<button data-v="${o}" aria-pressed="${o===cur}">${o==="all"?"ทั้งหมด":ST[o]}</button>`).join("")}</div>`}
 async function reports(){

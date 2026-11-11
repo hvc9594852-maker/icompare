@@ -2,6 +2,11 @@
 (function () {
   var API = "https://icompare-api.hvc9594852.workers.dev";
   var ON = /^https:\/\//.test(API);
+  // never record bots/automation or the site owner (any browser that has opened /admin/)
+  var UA = navigator.userAgent || "";
+  var BOT = navigator.webdriver || /bot|crawl|spider|slurp|headless|lighthouse|pagespeed|google|bing|yandex|baidu|preview|phantom|puppeteer|playwright|selenium/i.test(UA) || !(navigator.languages && navigator.languages.length);
+  var OWNER = false; try { OWNER = localStorage.getItem("icmp-notrack") === "1"; } catch (e) {}
+  var REC = ON && !BOT && !OWNER;
   var sid;
   try { sid = sessionStorage.getItem("icb-sid"); if (!sid) { sid = Math.random().toString(36).slice(2) + Date.now().toString(36); sessionStorage.setItem("icb-sid", sid); } } catch (e) { sid = "x" + Math.random().toString(36).slice(2); }
   var device = /iPad|Tablet/i.test(navigator.userAgent) ? "tablet" : (/Mobi|Android|iPhone/i.test(navigator.userAgent) ? "mobile" : "desktop");
@@ -13,7 +18,7 @@
   }
   var lastKey = "";
   function track(type, d) {
-    if (!ON) return;
+    if (!REC) return;
     d = d || {};
     var key = type + "|" + (d.cat || "") + "|" + (d.items || []).join(",");
     if (type !== "view" && key === lastKey) return; lastKey = key;
@@ -100,8 +105,24 @@
     document.addEventListener("keydown", k);
     document.body.appendChild(w); wire(w); setTimeout(function () { var t = w.querySelector("textarea"); if (t) t.focus(); }, 50);
   }
-  window.iCB = { on: ON, track: track, mountProduct: mountProduct, openReport: openReport };
+  window.iCB = { on: ON, track: track, mountProduct: mountProduct, openReport: openReport, popular: popular };
   track("view");
+  // a /vs/a--b/ page is itself a comparison
+  var vs = location.pathname.match(/^\/vs\/([^/]+?)--([^/]+?)\/?$/);
+  if (vs) track("compare", { items: [decodeURIComponent(vs[1]), decodeURIComponent(vs[2])], cat: (document.documentElement.getAttribute("data-cat") || null) });
+  // time on site: send visible time in small deltas when the tab is hidden or closed (text/plain beacon: no CORS preflight)
+  var shown = document.visibilityState === "visible" ? Date.now() : 0, acc = 0;
+  function flush() {
+    if (shown) { acc += Date.now() - shown; shown = 0; }
+    if (!REC || acc < 1000) return;
+    var body = JSON.stringify({ type: "leave", dur: acc, path: location.pathname.slice(0, 300), sid: sid, device: device });
+    acc = 0;
+    try { if (navigator.sendBeacon && navigator.sendBeacon(API + "/e", new Blob([body], { type: "text/plain" }))) return; } catch (e) {}
+    try { fetch(API + "/e", { method: "POST", body: body, keepalive: true, headers: { "Content-Type": "text/plain" } }); } catch (e) {}
+  }
+  document.addEventListener("visibilitychange", function () { if (document.visibilityState === "hidden") flush(); else shown = Date.now(); });
+  window.addEventListener("pagehide", flush);
+  function popular(cat) { return api("/popular?days=14" + (cat ? "&cat=" + encodeURIComponent(cat) : "")); }
   document.addEventListener("DOMContentLoaded", function () {
     var m = document.getElementById("icb-product"); if (m) mountProduct(m, m.dataset.id, m.dataset.name);
     document.querySelectorAll("[data-icb-report]").forEach(function (b) { b.addEventListener("click", function (e) { e.preventDefault(); openReport({}); }); if (ON) b.hidden = false; });
